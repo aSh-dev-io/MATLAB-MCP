@@ -1,0 +1,260 @@
+{
+  "summary": {
+    "total": 15,
+    "blocked": 1,
+    "fail": 1,
+    "info": 1,
+    "pass": 11,
+    "warn": 1
+  },
+  "checks": [
+    {
+      "check_id": "Q01",
+      "category": "structure",
+      "name": "Stage 1 artefacts present",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "mat=yes, csv=yes, json=yes, mapping=yes",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q02",
+      "category": "structure",
+      "name": "Canonical schema complete",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "18/18 columns present",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q03",
+      "category": "structure",
+      "name": "Profile set matches the declared inventory",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "found ['capacitance', 'charge', 'output', 'switching', 'thermal', 'transfer']; expected ['capacitance', 'charge', 'output', 'switching', 'thermal', 'transfer']",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q04",
+      "category": "ingestion",
+      "name": "Stage 1 CSV is well formed",
+      "status": "FAIL",
+      "severity": "HIGH",
+      "detail": "Every data row carries a trailing delimiter, so each record has 19 fields against a 18-column header. A default pandas read_csv silently promotes field 0 to the index and shifts all signals one column left, mislabelling every signal and nulling Crss_F. Repaired in memory by dropping the surplus empty trailing field; the Stage 1 file is left unmodified.",
+      "affected": 15904,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q05",
+      "category": "ingestion",
+      "name": "Repaired CSV matches the MAT sample for sample",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "15904 samples compared across 17 numeric signals, joined on (profile, sample ordinal); max relative difference 4.943e-10 (column id_A). Confirms the in-memory repair is exact and the MAT is usable as the authoritative source.",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q06",
+      "category": "completeness",
+      "name": "No infinite values",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "0 samples contain +/-inf",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q07",
+      "category": "completeness",
+      "name": "Missing-value inventory",
+      "status": "WARN",
+      "severity": "MEDIUM",
+      "detail": "ron_stage1_ohm: 8141. All are confined to ron_stage1_ohm, where Stage 1 itself writes NaN for ID <= 0.1 A. No other signal has gaps.",
+      "affected": 8141,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q08",
+      "category": "structure",
+      "name": "Simulation time strictly increasing within each profile",
+      "status": "PASS",
+      "severity": "MEDIUM",
+      "detail": "6 profiles checked",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q09",
+      "category": "structure",
+      "name": "Sampling interval uniform and equal to the solver step",
+      "status": "PASS",
+      "severity": "LOW",
+      "detail": "median dt = 1.000000e-09 s, spread = 1.694e-21 s; solver declares 1e-09 s",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q10",
+      "category": "structure",
+      "name": "No duplicate (profile, time) samples",
+      "status": "PASS",
+      "severity": "LOW",
+      "detail": "0 duplicate keys",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q11",
+      "category": "consistency",
+      "name": "Summary JSON profile inventory matches the MAT",
+      "status": "PASS",
+      "severity": "MEDIUM",
+      "detail": "json=['capacitance', 'charge', 'output', 'switching', 'thermal', 'transfer'], mat=['capacitance', 'charge', 'output', 'switching', 'thermal', 'transfer']",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q12",
+      "category": "consistency",
+      "name": "Summary JSON sample counts match the MAT",
+      "status": "PASS",
+      "severity": "MEDIUM",
+      "detail": "all profile counts agree",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q13",
+      "category": "provenance",
+      "name": "Stage 1 dataset defects propagated into Stage 2",
+      "status": "INFO",
+      "severity": "INFO",
+      "detail": "Stage 1 recorded 4 dataset defects: ['curves_absent', 'qg_not_sum_of_parts', 'qgd_test_condition', 'thermal_absent']. These are dataset properties, not ingestion failures, and remain open in Stage 2.",
+      "affected": 4,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q14",
+      "category": "provenance",
+      "name": "Evidence class recorded as unvalidated model output",
+      "status": "PASS",
+      "severity": "INFO",
+      "detail": "Stage 1 label: 'MODEL PREDICTION - NOT VALIDATED'. No experimental validation data exists anywhere in the inputs, so no Stage 2 output may be described as measured or experimentally validated.",
+      "affected": 0,
+      "evidence_class": "calculated_from_stage1_output"
+    },
+    {
+      "check_id": "Q15",
+      "category": "provenance",
+      "name": "Aging axis present in the source data",
+      "status": "BLOCKED",
+      "severity": "BLOCKER",
+      "detail": "There is no aging time, no repeated measurement of the same device and no second device instance. t_s is simulation time within a single sweep. Permanent degradation cannot be separated from operating-condition changes.",
+      "affected": 15904,
+      "evidence_class": "calculated_from_stage1_output"
+    }
+  ],
+  "physics_checks": [
+    {
+      "check_id": "P01",
+      "name": "Node current balance (ID + IG + IS = 0)",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "max |residual| = 0.000e+00 A over 15904 samples (tolerance 1.0e-09 A)",
+      "affected": 0
+    },
+    {
+      "check_id": "P02",
+      "name": "Power balance (Ploss = Pcond + Psw)",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "max |residual| = 0.000e+00 W over 15904 samples (tolerance 1.0e-09 W)",
+      "affected": 0
+    },
+    {
+      "check_id": "P03",
+      "name": "Pcond is channel power (Vds*Ich) and carries a displacement residual",
+      "status": "INFO",
+      "severity": "MEDIUM",
+      "detail": "Pcond is Vds*Ich with Stage 1's conduction-only channel current, while the exported ID additionally carries displacement and leakage current, so the two coincide only where nothing is moving: the median residual over dissipative samples is 6.674e-07 W. Largest gap over 705 saturated DC samples = 3.775e+01 W, at most 20.2 % of channel power. That gap implies a 3.106e+00 A displacement current, which exceeds the worst-case leakage (3.098e-05 A) by 100235x, so it is displacement charging and not a model error. The DC sweeps step Vds by 0.5 V per 1 ns sample, so these samples are not quasi-static and the residual is material here. On the switching load line the gap is far larger (up to ~843 W) because |dv/dt| reaches ~6e9 V/s. Downstream code must treat Pcond and Vds*ID as distinct quantities, must not add them together, and must not read the residual as a degradation signal.",
+      "affected": 0
+    },
+    {
+      "check_id": "P04",
+      "name": "Intrinsic capacitance positivity (Cds, Cgs >= 0)",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "min Cds = 6.1625e-10 F, min Cgs = 1.0001e-09 F; 0 negative samples",
+      "affected": 0
+    },
+    {
+      "check_id": "P05",
+      "name": "Gate charge monotonicity during the charge sweep",
+      "status": "PASS",
+      "severity": "HIGH",
+      "detail": "Qg starts at 4.7000e-09 C and ends at 1.6666e-08 C; 0 decreasing steps",
+      "affected": 0
+    },
+    {
+      "check_id": "P06",
+      "name": "Qg initial value at the start of the charge sweep",
+      "status": "WARN",
+      "severity": "MEDIUM",
+      "detail": "Qg(0) = 4.7000e-09 C, not 0. Stage 1 defines Qg = Qgs + Qgd where Qgd includes the Cgd depletion charge at VDS = 75 V, which equals the printed QGD = 4.7 nC. Qg is therefore an absolute charge referenced to the drain bias; Phase 2B must use delta-Qg over a gate excursion, not Qg itself.",
+      "affected": 1
+    },
+    {
+      "check_id": "P07",
+      "name": "Exported RON interpretable as a conduction resistance",
+      "status": "WARN",
+      "severity": "HIGH",
+      "detail": "6144/15904 samples (38.6%) are both conducting and in the triode region. Stage 1 masks RON only on ID > 0.1 A, so the remainder report Vds/ID in saturation or in the off state, where the ratio is not a resistance. Phase 2B must use ron_valid, not the raw column.",
+      "affected": 9760
+    },
+    {
+      "check_id": "P08",
+      "name": "Stage 1 RON agrees with recomputed Vds/ID where valid",
+      "status": "INFO",
+      "severity": "INFO",
+      "detail": "max relative difference = 0.000e+00 over 6144 gated samples",
+      "affected": 0
+    },
+    {
+      "check_id": "P09",
+      "name": "Temperature dependence present in the channel current",
+      "status": "BLOCKED",
+      "severity": "BLOCKER",
+      "detail": "Across the thermal sweep the 25->125 degC drain-current ratio deviates from 1.0 by at most 7.163e-08 (i.e. no dependence). The Stage 1 channel equation has no temperature term; only leakage scales. A temperature-normalised RON cannot be computed from this dataset without inventing a coefficient, so it is left unavailable.",
+      "affected": 324
+    },
+    {
+      "check_id": "P10",
+      "name": "Thermal model present (Tj rises above Tcase)",
+      "status": "BLOCKED",
+      "severity": "BLOCKER",
+      "detail": "max |Tj - Tcase| = 0.000e+00 degC. All thermal resistances and PTOT are TBD in the datasheet, so junction temperature is not modelled and no thermal stress indicator is available.",
+      "affected": 15904
+    },
+    {
+      "check_id": "P11",
+      "name": "Samples outside absolute-maximum or continuous ratings",
+      "status": "WARN",
+      "severity": "MEDIUM",
+      "detail": "7330 samples exceed a printed rating, driven by the datasheet characterisation sweeps (peak |ID| = 2066.3 A against a 115 A continuous rating). Legitimate as measurement conditions, but they are not application operating points and must be excluded from stress indicators.",
+      "affected": 7330
+    },
+    {
+      "check_id": "P12",
+      "name": "Aging / stress-history measurements present",
+      "status": "BLOCKED",
+      "severity": "BLOCKER",
+      "detail": "Every Stage 1 profile is a single operating-condition sweep on one simulated device at one point in time. There is no time-separated repetition, no stress history and no second device instance, so no permanent degradation can be separated from an operating change.",
+      "affected": 15904
+    }
+  ]
+}

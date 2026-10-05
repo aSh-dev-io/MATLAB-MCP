@@ -1,0 +1,47 @@
+# MATLAB generated files
+slprj/
+*.slxc
+*.asv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# VS Code
+.vscode/# MATLAB generated files
+slprj/
+*.slxc
+*.asv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# VS Code
+.vscode/

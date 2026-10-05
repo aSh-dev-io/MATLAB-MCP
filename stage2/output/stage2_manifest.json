@@ -1,0 +1,1344 @@
+{
+  "stage": "2A",
+  "purpose": "ingestion, data-quality validation and physics-consistency screening",
+  "not_in_scope": [
+    "degradation modelling",
+    "health-indicator weighting",
+    "health-state classification",
+    "remaining useful life",
+    "predictive accuracy",
+    "dashboard"
+  ],
+  "authoritative_source": "stage1_output.mat",
+  "sources": {
+    "mat": "D:\\MATLAB-MCP\\gan_digital_twin\\results\\stage1_output.mat",
+    "csv": "D:\\MATLAB-MCP\\gan_digital_twin\\results\\stage1_output.csv",
+    "json": "D:\\MATLAB-MCP\\gan_digital_twin\\results\\stage1_summary.json",
+    "mapping": "D:\\MATLAB-MCP\\gan_digital_twin\\DATASET_MAPPING.md"
+  },
+  "csv_parse": {
+    "path": "D:\\MATLAB-MCP\\gan_digital_twin\\results\\stage1_output.csv",
+    "header": [
+      "profile",
+      "t_s",
+      "Vgs_V",
+      "Vds_V",
+      "Tcase_C",
+      "ID_A",
+      "IG_A",
+      "IS_A",
+      "RON_ohm",
+      "Pcond_W",
+      "Psw_W",
+      "Ploss_W",
+      "Tj_C",
+      "Qg_C",
+      "Qgd_C",
+      "Ciss_F",
+      "Coss_F",
+      "Crss_F"
+    ],
+    "header_field_count": 18,
+    "rows_read": 15904,
+    "rows_repaired_trailing_delimiter": 15904,
+    "rows_dropped_malformed": 0,
+    "is_defective": true,
+    "defect": "Every data row carries a trailing delimiter, so each record has 19 fields against a 18-column header. A default pandas read_csv silently promotes field 0 to the index and shifts all signals one column left, mislabelling every signal and nulling Crss_F. Repaired in memory by dropping the surplus empty trailing field; the Stage 1 file is left unmodified.",
+    "notes": [
+      "CSV header uses the Stage 1 MATLAB identifiers rather than the canonical schema; got ['profile', 't_s', 'Vgs_V', 'Vds_V', 'Tcase_C', 'ID_A', 'IG_A', 'IS_A', 'RON_ohm', 'Pcond_W', 'Psw_W', 'Ploss_W', 'Tj_C', 'Qg_C', 'Qgd_C', 'Ciss_F', 'Coss_F', 'Crss_F']"
+    ]
+  },
+  "device": {
+    "part_number": "NTLEF2D2N15GN1",
+    "datasheet_revision": "P1 (preliminary), July 2026",
+    "manufacturer": "onsemi",
+    "technology": "enhancement-mode AlGaN/GaN HEMT",
+    "package": "PDSO-N8, 5.0 mm x 6.0 mm x 0.87 mm",
+    "publication_order": "NTLEF2D2N15GN1/D",
+    "datasheet_pages": 6.0,
+    "model_file": "D:\\MATLAB-MCP\\gan_digital_twin\\simulink\\gan_hemt_digital_twin.slx",
+    "generated_by": "export_twin_output",
+    "generated_utc": "2026-10-05T16:02:23Z",
+    "matlab_release": "2026a"
+  },
+  "evidence": {
+    "evidence_class": "calculated_from_stage1_simulation",
+    "has_experimental_validation": false,
+    "is_aging_measurement": false,
+    "model_prediction_label": "MODEL PREDICTION - NOT VALIDATED",
+    "thermal_note": "Thermal validation not supported by the provided dataset.",
+    "unvalidatable": [
+      "ID-VDS output curves",
+      "ID-VGS transfer curves",
+      "C-V curves",
+      "switching waveforms",
+      "turn-on and turn-off energies",
+      "thermal behaviour"
+    ],
+    "dataset_defects": {
+      "curves_absent": true,
+      "curves_detail": "The datasheet contains no ID-VDS, ID-VGS, C-V, switching or temperature characteristic curves. Model curves are predictions, not data.",
+      "qg_detail": "QGS + QGD = 15.5 nC does not equal QG = 34 nC. QG is corroborated by FOM-QG = QG*RDS(on) = 54.4 nC*mOhm.",
+      "qg_not_sum_of_parts": true,
+      "qgd_detail": "The QGD test condition VDS = 75 V with IDS = 50 A at VGS = 5 V cannot occur for this device: the twin passes far more than 50 A at that bias. The printed condition must be current limited.",
+      "qgd_test_condition": true,
+      "thermal_absent": true,
+      "thermal_detail": "Every thermal resistance and the total power rating are printed as TBD. No thermal model is possible."
+    },
+    "stage1_verification_summary": {
+      "dataset_inconsistency": 1.0,
+      "fail": 0.0,
+      "not_comparable": 2.0,
+      "pass": 12.0,
+      "total": 15.0
+    }
+  },
+  "provenance": {
+    "tags": [
+      "DATASET-DERIVED",
+      "CALCULATED-FROM-DATASET",
+      "MANUFACTURER-DERIVED",
+      "ASSUMED"
+    ],
+    "stage2_evidence_class": "calculated_from_stage1_simulation",
+    "parameters": {
+      "caps": {
+        "tag": "DATASET-DERIVED",
+        "basis": "Ciss, Coss, Crss at VDS=75 V, VGS=0 V, 1 MHz"
+      },
+      "cds_ref_F": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "Coss - Crss = 1131 pF"
+      },
+      "cgd0_F": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved from Crss(75 V) and Qgd"
+      },
+      "cgs_ref_F": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "Ciss - 2*Crss = 4782 pF"
+      },
+      "charge": {
+        "tag": "DATASET-DERIVED",
+        "basis": "QG, QGS, QGD and Qoss"
+      },
+      "coss0_F": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved from Coss(75 V) and Qoss"
+      },
+      "dc": {
+        "tag": "DATASET-DERIVED",
+        "basis": "R&D(on), V(th), IDSS, IGSS and test conditions"
+      },
+      "fom_qg_from_qg_and_ron": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "QG * RDS(on) = 54.4 nC*mOhm"
+      },
+      "idss_A": {
+        "tag": "DATASET-DERIVED",
+        "basis": "maximum IDSS at 125 degC"
+      },
+      "igss_A": {
+        "tag": "DATASET-DERIVED",
+        "basis": "maximum IGSS at 125 degC"
+      },
+      "k_amp_per_v2": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "from the RON(on) test point"
+      },
+      "leak_temp_ratio": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "60 uA / 4 uA across 25-125 degC"
+      },
+      "meta": {
+        "tag": "DATASET-DERIVED",
+        "basis": "part number, family, revision, date"
+      },
+      "model_form": {
+        "tag": "MANUFACTURER-DERIVED",
+        "basis": "depletion C(V) for Coss/Crss, gate-reduced Cgs, square-law channel with output conductance"
+      },
+      "ratings": {
+        "tag": "DATASET-DERIVED",
+        "basis": "voltage, current and power ratings"
+      },
+      "solver": {
+        "tag": "ASSUMED",
+        "basis": "numerical integration settings only"
+      },
+      "thermal_model": {
+        "tag": "ASSUMED",
+        "basis": "none; all thermal resistances are TBD so Tj tracks Tcase"
+      },
+      "va_V": {
+        "tag": "ASSUMED",
+        "basis": "no output-conductance data exist in the dataset"
+      },
+      "vds_ron_spec_V": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "RDS(on) * IDS = 0.08 V"
+      },
+      "vdsat_V": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved so Id_sat(5 V) equals the ID,pulse rating"
+      },
+      "vdss_ref_V": {
+        "tag": "DATASET-DERIVED",
+        "basis": "voltage of the printed IDSS test point"
+      },
+      "vgs_max_V": {
+        "tag": "DATASET-DERIVED",
+        "basis": "datasheet maximum gate drive"
+      },
+      "vgs_min_V": {
+        "tag": "DATASET-DERIVED",
+        "basis": "datasheet minimum on-state gate drive"
+      },
+      "vgsc_V": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved so integral Cgs dVgs equals Qgs"
+      },
+      "vigs_iso_V": {
+        "tag": "ASSUMED",
+        "basis": "gate-leakage knee width only"
+      },
+      "vjc_V": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved from Coss(75 V) and Qoss"
+      },
+      "vjg_V": {
+        "tag": "CALCULATED-FROM-DATASET",
+        "basis": "solved from Crss(75 V) and Qgd"
+      },
+      "vsmooth_V": {
+        "tag": "ASSUMED",
+        "basis": "numerical knee smoothing only"
+      },
+      "vth_V": {
+        "tag": "DATASET-DERIVED",
+        "basis": "gate threshold voltage"
+      }
+    },
+    "by_tag": {
+      "DATASET-DERIVED": [
+        "caps",
+        "charge",
+        "dc",
+        "idss_A",
+        "igss_A",
+        "meta",
+        "ratings",
+        "vdss_ref_V",
+        "vgs_max_V",
+        "vgs_min_V",
+        "vth_V"
+      ],
+      "CALCULATED-FROM-DATASET": [
+        "cds_ref_F",
+        "cgd0_F",
+        "cgs_ref_F",
+        "coss0_F",
+        "fom_qg_from_qg_and_ron",
+        "k_amp_per_v2",
+        "leak_temp_ratio",
+        "vds_ron_spec_V",
+        "vdsat_V",
+        "vgsc_V",
+        "vjc_V",
+        "vjg_V"
+      ],
+      "MANUFACTURER-DERIVED": [
+        "model_form"
+      ],
+      "ASSUMED": [
+        "solver",
+        "thermal_model",
+        "va_V",
+        "vigs_iso_V",
+        "vsmooth_V"
+      ]
+    },
+    "counts_by_tag": {
+      "DATASET-DERIVED": 11,
+      "CALCULATED-FROM-DATASET": 12,
+      "MANUFACTURER-DERIVED": 1,
+      "ASSUMED": 5
+    },
+    "untagged_parameters": [],
+    "unknown_tags_in_ledger": {},
+    "mapping_ledger": {
+      "path": "D:\\MATLAB-MCP\\gan_digital_twin\\DATASET_MAPPING.md",
+      "present": true,
+      "declared_tags": [
+        "DATASET-DERIVED",
+        "CALCULATED-FROM-DATASET",
+        "MANUFACTURER-DERIVED",
+        "ASSUMED"
+      ],
+      "tagged_rows": 56,
+      "tag_occurrences_in_tables": {
+        "DATASET-DERIVED": 37,
+        "CALCULATED-FROM-DATASET": 11,
+        "MANUFACTURER-DERIVED": 1,
+        "ASSUMED": 7
+      },
+      "unknown_tags": {},
+      "untagged_rows": []
+    }
+  },
+  "row_count": 15904,
+  "column_count": 51,
+  "profiles": {
+    "capacitance": {
+      "rows": 453,
+      "t_start_s": 0.0,
+      "t_stop_s": 4.52e-07,
+      "dt_median_s": 9.999999999999957e-10,
+      "vgs_values": [
+        0.0,
+        4.0,
+        5.0
+      ],
+      "vds_range_V": [
+        0.0,
+        150.0
+      ],
+      "tcase_values_C": [
+        25.0
+      ],
+      "operating_point_keys": 453,
+      "ron_valid_rows": 2,
+      "application_operating_rows": 0
+    },
+    "charge": {
+      "rows": 481,
+      "t_start_s": 0.0,
+      "t_stop_s": 4.800000000000001e-07,
+      "dt_median_s": 9.999999999999957e-10,
+      "vgs_values": [
+        0.0,
+        0.0125,
+        0.025,
+        0.0375,
+        0.05,
+        0.0625,
+        0.075,
+        0.0875,
+        0.1,
+        0.1125,
+        0.125,
+        0.1375,
+        0.15,
+        0.1625,
+        0.175,
+        0.1875,
+        0.2,
+        0.2125,
+        0.225,
+        0.2375,
+        0.25,
+        0.2625,
+        0.275,
+        0.2875,
+        0.3,
+        0.3125,
+        0.325,
+        0.3375,
+        0.35,
+        0.3625,
+        0.375,
+        0.3875,
+        0.4,
+        0.4125,
+        0.425,
+        0.4375,
+        0.45,
+        0.4625,
+        0.475,
+        0.4875,
+        0.5,
+        0.5125,
+        0.525,
+        0.5375,
+        0.55,
+        0.5625,
+        0.575,
+        0.5875,
+        0.6,
+        0.6125,
+        0.625,
+        0.6375,
+        0.65,
+        0.6625,
+        0.675,
+        0.6875,
+        0.7,
+        0.7125,
+        0.725,
+        0.7375,
+        0.75,
+        0.7625,
+        0.775,
+        0.7875,
+        0.8,
+        0.8125,
+        0.825,
+        0.8375,
+        0.85,
+        0.8625,
+        0.875,
+        0.8875,
+        0.9,
+        0.9125,
+        0.925,
+        0.9375,
+        0.95,
+        0.9625,
+        0.975,
+        0.9875,
+        1.0,
+        1.0125,
+        1.025,
+        1.0375,
+        1.05,
+        1.0625,
+        1.075,
+        1.0875,
+        1.1,
+        1.1125,
+        1.125,
+        1.1375,
+        1.15,
+        1.1625,
+        1.175,
+        1.1875,
+        1.2,
+        1.2125,
+        1.225,
+        1.2375,
+        1.25,
+        1.2625,
+        1.275,
+        1.2875,
+        1.3,
+        1.3125,
+        1.325,
+        1.3375,
+        1.35,
+        1.3625,
+        1.375,
+        1.3875,
+        1.4,
+        1.4125,
+        1.425,
+        1.4375,
+        1.45,
+        1.4625,
+        1.475,
+        1.4875,
+        1.5,
+        1.5125,
+        1.525,
+        1.5375,
+        1.55,
+        1.5625,
+        1.575,
+        1.5875,
+        1.6,
+        1.6125,
+        1.625,
+        1.6375,
+        1.65,
+        1.6625,
+        1.675,
+        1.6875,
+        1.7,
+        1.7125,
+        1.725,
+        1.7375,
+        1.75,
+        1.7625,
+        1.775,
+        1.7875,
+        1.8,
+        1.8125,
+        1.825,
+        1.8375,
+        1.85,
+        1.8625,
+        1.875,
+        1.8875,
+        1.9,
+        1.9125,
+        1.925,
+        1.9375,
+        1.95,
+        1.9625,
+        1.975,
+        1.9875,
+        2.0,
+        2.0125,
+        2.025,
+        2.0375,
+        2.05,
+        2.0625,
+        2.075,
+        2.0875,
+        2.1,
+        2.1125,
+        2.125,
+        2.1375,
+        2.15,
+        2.1625,
+        2.175,
+        2.1875,
+        2.2,
+        2.2125,
+        2.225,
+        2.2375,
+        2.25,
+        2.2625,
+        2.275,
+        2.2875,
+        2.3,
+        2.3125,
+        2.325,
+        2.3375,
+        2.35,
+        2.3625,
+        2.375,
+        2.3875,
+        2.4,
+        2.4125,
+        2.425,
+        2.4375,
+        2.45,
+        2.4625,
+        2.475,
+        2.4875,
+        2.5,
+        2.5125,
+        2.525,
+        2.5375,
+        2.55,
+        2.5625,
+        2.575,
+        2.5875,
+        2.6,
+        2.6125,
+        2.625,
+        2.6375,
+        2.65,
+        2.6625,
+        2.675,
+        2.6875,
+        2.7,
+        2.7125,
+        2.725,
+        2.7375,
+        2.75,
+        2.7625,
+        2.775,
+        2.7875,
+        2.8,
+        2.8125,
+        2.825,
+        2.8375,
+        2.85,
+        2.8625,
+        2.875,
+        2.8875,
+        2.9,
+        2.9125,
+        2.925,
+        2.9375,
+        2.95,
+        2.9625,
+        2.975,
+        2.9875,
+        3.0,
+        3.0125,
+        3.025,
+        3.0375,
+        3.05,
+        3.0625,
+        3.075,
+        3.0875,
+        3.1,
+        3.1125,
+        3.125,
+        3.1375,
+        3.15,
+        3.1625,
+        3.175,
+        3.1875,
+        3.2,
+        3.2125,
+        3.225,
+        3.2375,
+        3.25,
+        3.2625,
+        3.275,
+        3.2875,
+        3.3,
+        3.3125,
+        3.325,
+        3.3375,
+        3.35,
+        3.3625,
+        3.375,
+        3.3875,
+        3.4,
+        3.4125,
+        3.425,
+        3.4375,
+        3.45,
+        3.4625,
+        3.475,
+        3.4875,
+        3.5,
+        3.5125,
+        3.525,
+        3.5375,
+        3.55,
+        3.5625,
+        3.575,
+        3.5875,
+        3.6,
+        3.6125,
+        3.625,
+        3.6375,
+        3.65,
+        3.6625,
+        3.675,
+        3.6875,
+        3.7,
+        3.7125,
+        3.725,
+        3.7375,
+        3.75,
+        3.7625,
+        3.775,
+        3.7875,
+        3.8,
+        3.8125,
+        3.825,
+        3.8375,
+        3.85,
+        3.8625,
+        3.875,
+        3.8875,
+        3.9,
+        3.9125,
+        3.925,
+        3.9375,
+        3.95,
+        3.9625,
+        3.975,
+        3.9875,
+        4.0,
+        4.0125,
+        4.025,
+        4.0375,
+        4.05,
+        4.0625,
+        4.075,
+        4.0875,
+        4.1,
+        4.1125,
+        4.125,
+        4.1375,
+        4.15,
+        4.1625,
+        4.175,
+        4.1875,
+        4.2,
+        4.2125,
+        4.225,
+        4.2375,
+        4.25,
+        4.2625,
+        4.275,
+        4.2875,
+        4.3,
+        4.3125,
+        4.325,
+        4.3375,
+        4.35,
+        4.3625,
+        4.375,
+        4.3875,
+        4.4,
+        4.4125,
+        4.425,
+        4.4375,
+        4.45,
+        4.4625,
+        4.475,
+        4.4875,
+        4.5,
+        4.5125,
+        4.525,
+        4.5375,
+        4.55,
+        4.5625,
+        4.575,
+        4.5875,
+        4.6,
+        4.6125,
+        4.625,
+        4.6375,
+        4.65,
+        4.6625,
+        4.675,
+        4.6875,
+        4.7,
+        4.7125,
+        4.725,
+        4.7375,
+        4.75,
+        4.7625,
+        4.775,
+        4.7875,
+        4.8,
+        4.8125,
+        4.825,
+        4.8375,
+        4.85,
+        4.8625,
+        4.875,
+        4.8875,
+        4.9,
+        4.9125,
+        4.925,
+        4.9375,
+        4.95,
+        4.9625,
+        4.975,
+        4.9875,
+        5.0,
+        5.0125,
+        5.025,
+        5.0375,
+        5.05,
+        5.0625,
+        5.075,
+        5.0875,
+        5.1,
+        5.1125,
+        5.125,
+        5.1375,
+        5.15,
+        5.1625,
+        5.175,
+        5.1875,
+        5.2,
+        5.2125,
+        5.225,
+        5.2375,
+        5.25,
+        5.2625,
+        5.275,
+        5.2875,
+        5.3,
+        5.3125,
+        5.325,
+        5.3375,
+        5.35,
+        5.3625,
+        5.375,
+        5.3875,
+        5.4,
+        5.4125,
+        5.425,
+        5.4375,
+        5.45,
+        5.4625,
+        5.475,
+        5.4875,
+        5.5,
+        5.5125,
+        5.525,
+        5.5375,
+        5.55,
+        5.5625,
+        5.575,
+        5.5875,
+        5.6,
+        5.6125,
+        5.625,
+        5.6375,
+        5.65,
+        5.6625,
+        5.675,
+        5.6875,
+        5.7,
+        5.7125,
+        5.725,
+        5.7375,
+        5.75,
+        5.7625,
+        5.775,
+        5.7875,
+        5.8,
+        5.8125,
+        5.825,
+        5.8375,
+        5.85,
+        5.8625,
+        5.875,
+        5.8875,
+        5.9,
+        5.9125,
+        5.925,
+        5.9375,
+        5.95,
+        5.9625,
+        5.975,
+        5.9875,
+        6.0
+      ],
+      "vds_range_V": [
+        75.0,
+        75.0
+      ],
+      "tcase_values_C": [
+        25.0
+      ],
+      "operating_point_keys": 481,
+      "ron_valid_rows": 0,
+      "application_operating_rows": 0
+    },
+    "output": {
+      "rows": 405,
+      "t_start_s": 0.0,
+      "t_stop_s": 4.04e-07,
+      "dt_median_s": 9.999999999999957e-10,
+      "vgs_values": [
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        5.5
+      ],
+      "vds_range_V": [
+        0.0,
+        20.0
+      ],
+      "tcase_values_C": [
+        25.0
+      ],
+      "operating_point_keys": 405,
+      "ron_valid_rows": 27,
+      "application_operating_rows": 0
+    },
+    "switching": {
+      "rows": 14120,
+      "t_start_s": 0.0,
+      "t_stop_s": 1.4119000000000002e-05,
+      "dt_median_s": 1.0000000000000751e-09,
+      "vgs_values": [
+        0.0,
+        0.263158,
+        0.526316,
+        0.789474,
+        1.052632,
+        1.315789,
+        1.578947,
+        1.842105,
+        2.105263,
+        2.368421,
+        2.631579,
+        2.894737,
+        3.157895,
+        3.421053,
+        3.684211,
+        3.947368,
+        4.210526,
+        4.473684,
+        4.736842,
+        5.0
+      ],
+      "vds_range_V": [
+        1.6102594020322538,
+        100.0
+      ],
+      "tcase_values_C": [
+        25.0
+      ],
+      "operating_point_keys": 20,
+      "ron_valid_rows": 6006,
+      "application_operating_rows": 22
+    },
+    "thermal": {
+      "rows": 324,
+      "t_start_s": 0.0,
+      "t_stop_s": 3.23e-07,
+      "dt_median_s": 9.999999999999957e-10,
+      "vgs_values": [
+        3.0,
+        5.0
+      ],
+      "vds_range_V": [
+        0.0,
+        40.0
+      ],
+      "tcase_values_C": [
+        25.0,
+        125.0
+      ],
+      "operating_point_keys": 324,
+      "ron_valid_rows": 12,
+      "application_operating_rows": 0
+    },
+    "transfer": {
+      "rows": 121,
+      "t_start_s": 0.0,
+      "t_stop_s": 1.2000000000000002e-07,
+      "dt_median_s": 9.99999999999999e-10,
+      "vgs_values": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1.0,
+        1.05,
+        1.1,
+        1.15,
+        1.2,
+        1.25,
+        1.3,
+        1.35,
+        1.4,
+        1.45,
+        1.5,
+        1.55,
+        1.6,
+        1.65,
+        1.7,
+        1.75,
+        1.8,
+        1.85,
+        1.9,
+        1.95,
+        2.0,
+        2.05,
+        2.1,
+        2.15,
+        2.2,
+        2.25,
+        2.3,
+        2.35,
+        2.4,
+        2.45,
+        2.5,
+        2.55,
+        2.6,
+        2.65,
+        2.7,
+        2.75,
+        2.8,
+        2.85,
+        2.9,
+        2.95,
+        3.0,
+        3.05,
+        3.1,
+        3.15,
+        3.2,
+        3.25,
+        3.3,
+        3.35,
+        3.4,
+        3.45,
+        3.5,
+        3.55,
+        3.6,
+        3.65,
+        3.7,
+        3.75,
+        3.8,
+        3.85,
+        3.9,
+        3.95,
+        4.0,
+        4.05,
+        4.1,
+        4.15,
+        4.2,
+        4.25,
+        4.3,
+        4.35,
+        4.4,
+        4.45,
+        4.5,
+        4.55,
+        4.6,
+        4.65,
+        4.7,
+        4.75,
+        4.8,
+        4.85,
+        4.9,
+        4.95,
+        5.0,
+        5.05,
+        5.1,
+        5.15,
+        5.2,
+        5.25,
+        5.3,
+        5.35,
+        5.4,
+        5.45,
+        5.5,
+        5.55,
+        5.6,
+        5.65,
+        5.7,
+        5.75,
+        5.8,
+        5.85,
+        5.9,
+        5.95,
+        6.0
+      ],
+      "vds_range_V": [
+        0.08,
+        0.08
+      ],
+      "tcase_values_C": [
+        25.0
+      ],
+      "operating_point_keys": 121,
+      "ron_valid_rows": 97,
+      "application_operating_rows": 0
+    }
+  },
+  "quality_summary": {
+    "total": 15,
+    "blocked": 1,
+    "fail": 1,
+    "info": 1,
+    "pass": 11,
+    "warn": 1
+  },
+  "physics_summary": {
+    "total": 12,
+    "passed": 4,
+    "warned": 3,
+    "blocked": 3,
+    "info": 2
+  },
+  "blockers": [
+    "Q15",
+    "P09",
+    "P10",
+    "P12"
+  ],
+  "analysis_conventions": {
+    "conduction_leakage_multiple": {
+      "value": 100.0,
+      "justification": "A sample counts as conducting when |ID| >= 100 x I_leak. 100x is an analysis convention, chosen so channel current dominates the dataset-anchored leakage model (IDSS = 4 uA at 25 degC) by two decades. It is a classification choice, not a physical constant."
+    },
+    "vds_positive_floor_V": {
+      "value": 1e-06,
+      "justification": "Numerical floor only. At Vds = 0 the ratio Vds/ID is identically zero regardless of the device's true resistance."
+    },
+    "operating_point_decimals": {
+      "value": 3,
+      "justification": "Biases are snapped to 1e-3 V / 1e-3 degC so that repeated samples at nominally identical conditions group into one comparison bucket. Sampling noise is far below this."
+    }
+  },
+  "tolerances": {
+    "kcl_atol": {
+      "value": 1e-09,
+      "justification": "Node current balance ID+IG+IS=0 is an algebraic identity in the Stage 1 model; the tolerance covers float64 round-off over Vgs/ID magnitudes up to ~2e3 A, not model error."
+    },
+    "power_balance_atol": {
+      "value": 1e-09,
+      "justification": "Ploss is defined as Pcond+Psw in the Stage 1 terminal script, so any residual is float64 round-off only."
+    },
+    "csv_mat_rtol": {
+      "value": 1e-09,
+      "justification": "The CSV and MAT hold the same arrays, but MATLAB writes CSV as text with roughly 10 significant digits, so agreement is bounded by that formatting rather than being exact. Observed worst case is ~2.7e-10 relative, on gate-ramp voltages such as 1.0526315789473684 written as 1.052631579. Anything larger would indicate a real misalignment."
+    },
+    "ron_positive_floor_ohm": {
+      "value": 1e-09,
+      "justification": "A conduction resistance is strictly positive. A non-positive value is an artefact of Vds/ID with Vds=0, not a measurement of zero ohms."
+    }
+  },
+  "schema": [
+    {
+      "column": "profile",
+      "unit": "categorical",
+      "origin": "stage1"
+    },
+    {
+      "column": "t_s",
+      "unit": "s",
+      "origin": "stage1"
+    },
+    {
+      "column": "vgs_V",
+      "unit": "V",
+      "origin": "stage1"
+    },
+    {
+      "column": "vds_V",
+      "unit": "V",
+      "origin": "stage1"
+    },
+    {
+      "column": "tcase_C",
+      "unit": "degC",
+      "origin": "stage1"
+    },
+    {
+      "column": "id_A",
+      "unit": "A",
+      "origin": "stage1"
+    },
+    {
+      "column": "ig_A",
+      "unit": "A",
+      "origin": "stage1"
+    },
+    {
+      "column": "is_A",
+      "unit": "A",
+      "origin": "stage1"
+    },
+    {
+      "column": "ron_stage1_ohm",
+      "unit": "Ohm",
+      "origin": "stage1"
+    },
+    {
+      "column": "pcond_W",
+      "unit": "W",
+      "origin": "stage1"
+    },
+    {
+      "column": "psw_W",
+      "unit": "W",
+      "origin": "stage1"
+    },
+    {
+      "column": "ploss_W",
+      "unit": "W",
+      "origin": "stage1"
+    },
+    {
+      "column": "tj_C",
+      "unit": "degC",
+      "origin": "stage1"
+    },
+    {
+      "column": "qg_C",
+      "unit": "C",
+      "origin": "stage1"
+    },
+    {
+      "column": "qgd_C",
+      "unit": "C",
+      "origin": "stage1"
+    },
+    {
+      "column": "ciss_F",
+      "unit": "F",
+      "origin": "stage1"
+    },
+    {
+      "column": "coss_F",
+      "unit": "F",
+      "origin": "stage1"
+    },
+    {
+      "column": "crss_F",
+      "unit": "F",
+      "origin": "stage1"
+    },
+    {
+      "column": "sample_index",
+      "unit": "index within profile",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "operating_point_key",
+      "unit": "vgs|vds|tcase snapped to the configured rounding",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "i_leak_A",
+      "unit": "A; Stage 1 leakage equation",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "conduction_threshold_A",
+      "unit": "A; conduction_leakage_multiple x i_leak_A",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_conducting",
+      "unit": "bool; |ID| >= conduction threshold",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_positive_vds",
+      "unit": "bool",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_triode",
+      "unit": "bool; VDS <= VDSAT(VGS)",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "vdsat_vgs_V",
+      "unit": "V; Stage 1 knee voltage at this VGS",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "operating_regime",
+      "unit": "zero_bias | off_or_leakage | triode_ohmic | saturation_or_cvdrive",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_static_ohm",
+      "unit": "Ohm; VDS/ID, NaN unless ron_valid",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_valid",
+      "unit": "bool; conducting AND triode AND VDS>0",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_valid_reason",
+      "unit": "why ron_valid is False",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_differential_ohm",
+      "unit": "Ohm; dVDS/dID from the DC sweep, NaN if unavailable",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_differential_available",
+      "unit": "bool",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_temp_normalised_ohm",
+      "unit": "always NaN in Phase 2A",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ron_tempnorm_status",
+      "unit": "reason temperature normalisation is unavailable",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "profile_role",
+      "unit": "what the profile is for",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_characterisation_sweep",
+      "unit": "bool",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_application_operating_point",
+      "unit": "bool",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "vds_rating_utilisation",
+      "unit": "ratio; |VDS| / 150 V",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "vgs_rating_utilisation",
+      "unit": "ratio; VGS / 6 V",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "id_continuous_rating_utilisation",
+      "unit": "ratio; |ID| / 115 A",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_rating_exceeded",
+      "unit": "bool",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "kcl_residual_A",
+      "unit": "A; ID+IG+IS, identity residual",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "ploss_identity_residual_W",
+      "unit": "W; Ploss-(Pcond+Psw), identity residual",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "pcond_minus_vds_id_W",
+      "unit": "W; displacement-attributed power, not model error",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "cgd_derived_F",
+      "unit": "F; = Crss",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "cds_derived_F",
+      "unit": "F; = Coss - Crss",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "cgs_derived_F",
+      "unit": "F; = Ciss - 2*Crss",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "evidence_class",
+      "unit": "provenance class of the row",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "has_experimental_validation",
+      "unit": "always False",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "is_aging_measurement",
+      "unit": "always False",
+      "origin": "stage2_derived"
+    },
+    {
+      "column": "aging_time_h",
+      "unit": "always NaN; no aging axis exists",
+      "origin": "stage2_derived"
+    }
+  ]
+}

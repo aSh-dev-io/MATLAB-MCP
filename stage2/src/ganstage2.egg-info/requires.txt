@@ -1,0 +1,6 @@
+numpy>=1.26
+pandas>=2.1
+h5py>=3.9
+
+[dev]
+pytest>=7.4

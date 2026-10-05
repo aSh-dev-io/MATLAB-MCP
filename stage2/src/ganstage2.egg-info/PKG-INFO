@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: ganstage2
+Version: 0.2.0
+Summary: Stage 2 physics-informed degradation analysis for the GaN HEMT digital twin (Phase 2A)
+Requires-Python: >=3.10
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.1
+Requires-Dist: h5py>=3.9
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4; extra == "dev"
